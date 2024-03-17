@@ -8,15 +8,17 @@ import CreateProfile from './app/screens/CreateProfile';
 import React, { useState, useEffect } from 'react'; // Import useEffect
 import { onAuthStateChanged } from 'firebase/auth';
 import { FIREBASE_AUTH } from './FirebaseConfig';
-const Stack = createNativeStackNavigator();
-const insideStack = createNativeStackNavigator();
 
-function InsideLayout() {
+const Stack = createNativeStackNavigator();
+
+const InsideStack = createNativeStackNavigator(); // Capitalized component name
+
+function InsideLayout() { // Capitalized function name
   return (
-    <insideStack.Navigator>
-      <insideStack.Screen name="Home" component={Home}/>
-      <insideStack.Screen name="CreateProfile" component={CreateProfile}/>
-    </insideStack.Navigator>
+    <InsideStack.Navigator>
+      <InsideStack.Screen name="Home" component={Home}/>
+      <InsideStack.Screen name="CreateProfile" component={CreateProfile}/>
+    </InsideStack.Navigator>
   );
 }
 
