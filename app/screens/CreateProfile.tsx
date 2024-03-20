@@ -1,10 +1,10 @@
 import { ScrollView, View, Text, TextInput, StyleSheet, Button, Image, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
 import { getStorage, ref,uploadBytes,uploadString,getDownloadURL } from "firebase/storage";
 import { FIREBASE_DB } from '../../FirebaseConfig';
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc,onSnapshot } from "firebase/firestore"; 
 
 const CreateProfile = () => {
   const db = FIREBASE_DB;
@@ -18,6 +18,26 @@ const CreateProfile = () => {
   const [bio, setBio] = useState('');
   const [downloadURL, setDownloadURL] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
+  useEffect(() => {
+    const uid = sessionStorage.getItem('uid')||'';
+    const unsub = onSnapshot(doc(db, "profile", uid), (doc) => {
+      debugger
+      let data = doc.data();
+      debugger
+      setFirstName(data['firstName'])
+      setLastName(data['lastName'])
+      let num = parseInt(data['numClasses']);
+       setNumClasses(num);
+      setCourseData(data['courseData'])
+      setShortTermGoals(data['shortTermGoals'])
+      setLongTermGoals(data['longTermGoals'])
+      setBio(data['bio'])
+      setDownloadURL(data['downloadURL'])
+      setProfilePicture(data['profilePicture'])
+      setAreasToImprove(data['areasToImprove'])
+  });
+  
+  }, []);
 
   // Define options for short-term and long-term goals
   const shortTermGoalsOptions = ['N/A','Improve grades', 'Learn new study techniques', 'Complete assignments on time', 'Prepare for exams'];
@@ -184,6 +204,7 @@ const CreateProfile = () => {
       <RNPickerSelect
         style={pickerSelectStyles}
         onValueChange={(value) => setNumClasses(value)}
+        value={numClasses}
         items={[
           { label: '1', value: 1 },
           { label: '2', value: 2 },
