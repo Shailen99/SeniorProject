@@ -27,7 +27,8 @@ export default function App() {
 
   useEffect(() => {
     onAuthStateChanged(FIREBASE_AUTH, (user) => {
-      console.log('user', user);
+      sessionStorage.setItem('uid',user['uid']);
+      console.log('user', user['uid']);
       setUser(user);
     });
   }, []);

@@ -1,9 +1,13 @@
-import { ScrollView, View, Text, TextInput, StyleSheet, Button, Image, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, TextInput, StyleSheet, Button, Image, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import * as ImagePicker from 'expo-image-picker';
+import { getStorage, ref,uploadBytes,uploadString,getDownloadURL } from "firebase/storage";
+import { FIREBASE_DB } from '../../FirebaseConfig';
+import { doc, setDoc } from "firebase/firestore"; 
 
 const CreateProfile = () => {
+  const db = FIREBASE_DB;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [numClasses, setNumClasses] = useState(1);
@@ -12,6 +16,7 @@ const CreateProfile = () => {
   const [longTermGoals, setLongTermGoals] = useState([]);
   const [areasToImprove, setAreasToImprove] = useState([]);
   const [bio, setBio] = useState('');
+  const [downloadURL, setDownloadURL] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
 
   // Define options for short-term and long-term goals
@@ -87,6 +92,7 @@ const CreateProfile = () => {
 
     if (!result.cancelled) {
       setProfilePicture(result.uri);
+      uploadImageToFirebase(result.uri);
     }
   };
 
@@ -94,7 +100,64 @@ const CreateProfile = () => {
     // Handle submission of profile data and course data
     console.log('Submitted Profile Data:', { firstName, lastName });
     console.log('Submitted Course Data:', courseData);
+    // 使用示例
+    let data = { firstName: firstName, lastName: lastName ,downloadURL:downloadURL,
+      numClasses:numClasses,courseData:courseData,shortTermGoals:shortTermGoals,
+      longTermGoals:longTermGoals,areasToImprove:areasToImprove,
+      bio:bio,profilePicture:profilePicture};
+      console.log('Submitted all data:', data);
+    saveDataToFirebase(data)
   };
+  const saveDataToFirebase = async(data) => {
+    const uid = sessionStorage.getItem('uid')||'';
+     setDoc(doc(db, "profile", uid), data).then(res =>{
+       alert("Profile Save Success!")
+     }).catch(err=>{
+      debugger
+     });
+  };
+
+   const uploadImageToFirebase = (imageUri) => {
+    const storage = getStorage();
+    const fileName = Date.now() + '.png';
+    const mountainImagesRef = ref(storage, 'images/'+fileName);
+    const file = base64ToFile(imageUri,fileName);
+    uploadBytes(mountainImagesRef, file).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((downloadURL) => {
+        alert('ProfilePicture Upload Success!');
+        setDownloadURL(downloadURL);
+      });
+    });
+    function base64ToFile(base64Data, filename) {
+      // 将base64字符串转换为二进制数据
+      let arr = base64Data.split(',');
+      let mime = arr[0].match(/:(.*?);/)[1];
+      let bstr = atob(arr[1]);
+      let n = bstr.length;
+      let u8arr = new Uint8Array(n);
+   
+      while(n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+      }
+   
+      // 创建Blob对象
+      let blob = new Blob([u8arr], {type: mime});
+   
+      // 创建File对象
+      let file = new File([blob], filename, {type: mime});
+   
+      return file;
+  }
+    
+
+
+   
+    // const imageRef = storage.ref('images').child(fileName);
+    // const response = await fetch(imageUri);
+    // const blob = await response.blob();
+    // await imageRef.put(blob);
+    // return await imageRef.getDownloadURL();
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
