@@ -128,8 +128,9 @@ const CreateProfile = () => {
         setDownloadURL(downloadURL);
       });
     });
+    //base64 to file
     function base64ToFile(base64Data, filename) {
-      // 将base64字符串转换为二进制数据
+      // base64
       let arr = base64Data.split(',');
       let mime = arr[0].match(/:(.*?);/)[1];
       let bstr = atob(arr[1]);
@@ -139,11 +140,8 @@ const CreateProfile = () => {
       while(n--) {
           u8arr[n] = bstr.charCodeAt(n);
       }
-   
-      // 创建Blob对象
+
       let blob = new Blob([u8arr], {type: mime});
-   
-      // 创建File对象
       let file = new File([blob], filename, {type: mime});
    
       return file;

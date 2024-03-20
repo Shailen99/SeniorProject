@@ -27,13 +27,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   loginButtonOutline: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#219ebc',
   },
   button: {
     alignItems: 'center',
     padding: 10,
-    marginTop: 10,
+    marginTop: 30,
     marginLeft:50,
     marginRight:50,
     borderRadius: 5,
