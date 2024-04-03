@@ -1,149 +1,130 @@
 import React, { useState } from 'react';
-import { Text, ImageBackground, KeyboardAvoidingView, View, TextInput, StyleSheet, ActivityIndicator, TouchableOpacity, Text as RNText, Platform } from 'react-native';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-import { FIREBASE_AUTH } from '../../FirebaseConfig';
-import { NavigationContainer, useNavigation } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import CreateProfile from './app/screens/CreateProfile';
+import { Text, View, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const auth = FIREBASE_AUTH;
-  const navigation = useNavigation();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
-  const signIn = async () => {
-    setLoading(true);
-    try {
-      const response = await signInWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      alert('Logged In!');
-    } catch (error) {
-      console.log(error);
-      alert('Error: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const signIn = () => {
+        // Implement sign in functionality
+    };
 
-  const signUp = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(response);
-      navigation.navigate('CreateProfile');
-    } catch (error) {
-      console.log(error);
-      alert('Error: ' + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
-  return (
-    <>
-      <ImageBackground source={require('../../assets/img_homeback.jpg')} style={styles.background}>
-        <Text style={styles.exampleText}>Study Partners</Text>
+    return (
         <View style={styles.container}>
-          <View style={styles.formContainer}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                value={email}
-                style={styles.input}
-                placeholder="Enter your email"
-                autoCapitalize="none"
-                onChangeText={(text) => setEmail(text)}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
-              <TextInput
-                value={password}
-                style={styles.input}
-                onChangeText={(text) => setPassword(text)}
-                secureTextEntry
-              />
-            </View>
-            {loading ? <ActivityIndicator size="large" color="#0000ff" /> : (
-              <>
-                <TouchableOpacity style={[styles.button, styles.loginButtonOutline]} onPress={() => signIn()}>
-                  <RNText style={styles.buttonText}>Log In</RNText>
+            <Image source={require('../../assets/studyMan.jpg')} style={styles.image} />
+            <Text style={styles.title}>Welcome to Study Partners!</Text>
+            <View style={styles.formContainer}>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        value={email}
+                        style={styles.input}
+                        placeholder="Email"
+                        autoCapitalize="none"
+                        onChangeText={(text) => setEmail(text)}
+                    />
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        value={password}
+                        style={styles.input}
+                        placeholder="Password"
+                        onChangeText={(text) => setPassword(text)}
+                        secureTextEntry={!showPassword}
+                    />
+                    <TouchableOpacity style={styles.eyeIconContainer} onPress={togglePasswordVisibility}>
+                        <Image source={require('../../assets/eyeIcon.png')} style={styles.eyeIcon} />
+                    </TouchableOpacity>
+                </View>
+                <TouchableOpacity style={styles.loginButton} onPress={signIn}>
+                    <Text style={styles.loginButtonText}>LOGIN</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.signupButtonOutline]} onPress={() => signUp()}>
-                  <RNText style={styles.buttonText}>Sign Up</RNText>
+                <TouchableOpacity>
+                    <Text style={styles.forgotPasswordText}>Forgot password?</Text>
                 </TouchableOpacity>
-              </>
-            )}
-          </View>
+                <View style={styles.signUpContainer}>
+                    <Text style={styles.signUpText}>Don't have an account? </Text>
+                    <TouchableOpacity>
+                        <Text style={styles.signUpLink}>Create one</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </View>
-      </ImageBackground>
-    </>
-  );
+    );
 };
 
-export default Login;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  formContainer: {
-    backgroundColor: '#023047',
-    borderRadius: 10,
-    padding: 20,
-    width: 300,
-  },
-  inputContainer: {
-    marginBottom: 10,
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 4,
-    padding: 10,
-    backgroundColor: '#fff', // Set input background color to white
-    color: '#000', // Set input text color
-  },
-  label: {
-    color: '#fff',
-    marginBottom: 5,
-  },
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    alignItems: 'center',
-    padding: 10,
-    marginTop: 10,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: '#219ebc',
-    fontWeight: 'bold',
-  },
-  loginButtonOutline: {
-    borderWidth: 1,
-    borderColor: '#219ebc',
-  },
-  signupButtonOutline: {
-    borderWidth: 1,
-    borderColor: '#219ebc',
-  },
-  exampleText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: 'white', // Text color
-    position: 'absolute',
-    top: 50,
-    textShadowColor: '#000', // Outline color
-    textShadowOffset: { width: -1, height: 1 }, // Outline offset
-    textShadowRadius: 5, // Outline thickness
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#FFF',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingTop: 50,
+    },
+    image: {
+        width: 200,
+        height: 200,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginTop: 20,
+        marginBottom: 20,
+    },
+    formContainer: {
+        width: '80%',
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F3F3F3',
+        borderRadius: 10,
+        marginBottom: 20,
+    },
+    input: {
+        flex: 1,
+        height: 50,
+        paddingLeft: 15,
+    },
+    eyeIconContainer: {
+        position: 'absolute',
+        right: 10,
+    },
+    eyeIcon: {
+        width: 24,
+        height: 24,
+    },
+    loginButton: {
+        backgroundColor: '#2196F3',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    loginButtonText: {
+        color: '#FFF',
+        fontWeight: 'bold',
+    },
+    forgotPasswordText: {
+        textAlign: 'center',
+        color: '#888',
+        marginBottom: 10,
+    },
+    signUpContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    signUpText: {
+        color: '#888',
+    },
+    signUpLink: {
+        color: '#2196F3',
+    },
 });
+
+export default Login;
