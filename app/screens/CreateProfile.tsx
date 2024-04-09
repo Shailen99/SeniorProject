@@ -18,6 +18,15 @@ const CreateProfile = () => {
   const [bio, setBio] = useState('');
   const [downloadURL, setDownloadURL] = useState('');
   const [profilePicture, setProfilePicture] = useState(null);
+
+  const [gender, setGender] = useState('');
+  const [major, setMajor] = useState('');
+  const [yearPreference, setYearPreference] = useState('');
+  const [currentYear, setCurrentYear] = useState('');
+  const [studyStyles, setStudyStyles] = useState([]);
+  const [studyLocationPreferences, setStudyLocationPreferences] = useState([]);
+  const [studyTimePreferences, setStudyTimePreferences] = useState([]);
+
   useEffect(() => {
     const uid = sessionStorage.getItem('uid')||'';
     const unsub = onSnapshot(doc(db, "profile", uid), (doc) => {
@@ -38,6 +47,30 @@ const CreateProfile = () => {
   });
   
   }, []);
+
+
+  // options for gender 
+  const genderOptions = [
+    { label: 'Male', value: 'male' },
+    { label: 'Female', value: 'female' },
+    { label: 'Other', value: 'other' },
+  ];
+
+  //options for year
+  const yearOptions = [
+    { label: '1st Year', value: '1' },
+    { label: '2nd Year', value: '2' },
+    { label: '3rd Year', value: '3' },
+    { label: '4th Year', value: '4' },
+    { label: 'Graduate', value: 'graduate' },
+  ];
+
+  //study style
+  const studyStyleOptions = ['Visual', 'Auditory', 'Read/Write', 'Kinesthetic'];
+  //locations
+  const locationOptions = ['Library', 'Cafe', 'Class', 'Outdoors'];
+  //times
+  const timeOptions = ['Morning', 'Afternoon', 'Evening', 'Night'];
 
   // Define options for short-term and long-term goals
   const shortTermGoalsOptions = ['N/A','Improve grades', 'Learn new study techniques', 'Complete assignments on time', 'Prepare for exams'];
@@ -96,6 +129,32 @@ const CreateProfile = () => {
     }
   };
 
+  // new additions to toggle for new elements.
+  const toggleStudyStyle = (style) => {
+    if (studyStyles.includes(style)) {
+      setStudyStyles(studyStyles.filter(item => item !== style));
+    } else {
+      setStudyStyles([...studyStyles, style]);
+    }
+  };
+  
+  const toggleStudyLocation = (location) => {
+    if (studyLocationPreferences.includes(location)) {
+      setStudyLocationPreferences(studyLocationPreferences.filter(item => item !== location));
+    } else {
+      setStudyLocationPreferences([...studyLocationPreferences, location]);
+    }
+  };
+  
+  const toggleStudyTime = (time) => {
+    if (studyTimePreferences.includes(time)) {
+      setStudyTimePreferences(studyTimePreferences.filter(item => item !== time));
+    } else {
+      setStudyTimePreferences([...studyTimePreferences, time]);
+    }
+  };
+  
+
   const selectProfilePicture = async () => {
     let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
@@ -121,12 +180,30 @@ const CreateProfile = () => {
     console.log('Submitted Profile Data:', { firstName, lastName });
     console.log('Submitted Course Data:', courseData);
     // 使用示例
-    let data = { firstName: firstName, lastName: lastName ,downloadURL:downloadURL,
-      numClasses:numClasses,courseData:courseData,shortTermGoals:shortTermGoals,
-      longTermGoals:longTermGoals,areasToImprove:areasToImprove,
-      bio:bio,profilePicture:profilePicture};
-      console.log('Submitted all data:', data);
-    saveDataToFirebase(data)
+    let data = {
+      firstName: firstName,
+      lastName: lastName,
+      downloadURL: downloadURL,
+      numClasses: numClasses,
+      courseData: courseData,
+      shortTermGoals: shortTermGoals,
+      longTermGoals: longTermGoals,
+      areasToImprove: areasToImprove,
+      bio: bio,
+      profilePicture: profilePicture,
+      // New fields added 
+      gender: gender,
+      major: major,
+      yearPreference: yearPreference, 
+      currentYear: currentYear, 
+      studyStyles: studyStyles, 
+      studyLocationPreferences: studyLocationPreferences, 
+      studyTimePreferences: studyTimePreferences, 
+    };
+    console.log('Submitted all data:', data);
+  
+   
+    saveDataToFirebase(data);
   };
   const saveDataToFirebase = async(data) => {
     const uid = sessionStorage.getItem('uid')||'';
@@ -283,6 +360,69 @@ const CreateProfile = () => {
         placeholder="Write a brief bio about yourself"
         multiline
       />
+
+      {/* New additions to User profile */}
+
+      {/* Gender Selection */}
+      <Text>Gender:</Text>
+      <RNPickerSelect
+        style={pickerSelectStyles}
+        onValueChange={setGender}
+        value={gender}
+        items={genderOptions}
+      />
+
+      {/* Major Input */}
+      <Text>Major:</Text>
+      <TextInput
+        style={styles.input}
+        value={major}
+        onChangeText={setMajor}
+        placeholder="Enter your major"
+      />
+
+      {/* Current Year Selection */}
+      <Text>Current Year:</Text>
+      <RNPickerSelect
+        style={pickerSelectStyles}
+        onValueChange={setCurrentYear}
+        value={currentYear}
+        items={yearOptions}
+      />
+
+      {/* Study Style Selection */}
+<Text>Preferred Study Style:</Text>
+{studyStyleOptions.map((style, index) => (
+  <Button
+    key={index}
+    title={style}
+    onPress={() => toggleStudyStyle(style)}
+    color={studyStyles.includes(style) ? 'blue' : 'gray'}
+  />
+))}
+
+{/* Study Location Preferences */}
+<Text>Preferred Study Locations:</Text>
+{locationOptions.map((location, index) => (
+  <Button
+    key={index}
+    title={location}
+    onPress={() => toggleStudyLocation(location)}
+    color={studyLocationPreferences.includes(location) ? 'blue' : 'gray'}
+  />
+))}
+
+{/* Study Time Preferences */}
+<Text>Preferred Study Times:</Text>
+{timeOptions.map((time, index) => (
+  <Button
+    key={index}
+    title={time}
+    onPress={() => toggleStudyTime(time)}
+    color={studyTimePreferences.includes(time) ? 'blue' : 'gray'}
+  />
+))}
+
       {/* Profile Picture */}
       <Text>Profile Picture:</Text>
       <View style={styles.profilePictureContainer}>
