@@ -1,18 +1,19 @@
 import { useNavigation } from '@react-navigation/core'
 import React , { useEffect, useState } from 'react'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import MainContainer from '../mainContainer'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 
 const Login = () => {
     console.log(FIREBASE_AUTH);
     const auth = getAuth();
+    const db = getFirestore();
     const[email,setEmail] = useState('');
     const[password,setPassword] = useState('');
     const navigation = useNavigation();
-    const [loading,setLoading] = useState(false)
 
     useEffect(() => {
         const unsubcribe = FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -26,7 +27,7 @@ const Login = () => {
     
 
     const handleLogin = () => {
-        setLoading(true)
+        console.log("Login button pressed");
         signInWithEmailAndPassword(auth,email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
@@ -38,21 +39,26 @@ const Login = () => {
             });
     };
     
+    
     const handleRegistration = () => {
-        setLoading(true)
-        const data = {
-            email: email.toLowerCase(),
-            password: password,
-        }
-        registerUser(data)
-        .then(response => {
-            console.log("Successfully added user login with email: '" + data.email + "'")
-            handleLogin()
-        })
-        .catch(err => {
-            alert(err)
-        })
-};
+        console.log("Registration button pressed");
+        createUserWithEmailAndPassword(auth,email, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log('Registered with email:', user.email);
+                return setDoc(doc(db, "users", user.uid), {
+                    email: user.email,
+                });    
+            })
+            .then(() => {
+                Alert.alert("Success", "Registration successful and data saved to Firestore.");
+            })    
+            .catch(error => {
+                console.log(error);
+                alert(error.message);
+            });
+    };
+    
         return (
 
 
