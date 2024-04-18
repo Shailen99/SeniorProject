@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './navigation/screens/LogIn'
 import HomeScreen from './navigation/screens/HomeScreen';
+import { PaperProvider } from 'react-native-paper';
 
 const homeName = 'Home';
 
@@ -16,7 +17,10 @@ export let isUserLoggedIn = false;
 export default function App() {
     const userLoggedIn = isUserLoggedIn;
     return (
+      <PaperProvider>
       <MainContainer/>
+      </PaperProvider>
+
     );
 }
 
