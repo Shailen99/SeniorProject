@@ -12,6 +12,7 @@ const Login = () => {
     const[email,setEmail] = useState('');
     const[password,setPassword] = useState('');
     const navigation = useNavigation();
+    const [loading,setLoading] = useState(false)
 
     useEffect(() => {
         const unsubcribe = FIREBASE_AUTH.onAuthStateChanged(user => {
@@ -25,7 +26,7 @@ const Login = () => {
     
 
     const handleLogin = () => {
-        console.log("Login button pressed");
+        setLoading(true)
         signInWithEmailAndPassword(auth,email, password)
             .then(userCredentials => {
                 const user = userCredentials.user;
@@ -38,17 +39,20 @@ const Login = () => {
     };
     
     const handleRegistration = () => {
-        console.log("Registration button pressed");
-        createUserWithEmailAndPassword(auth,email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log('Registered with email:', user.email);
-            })
-            .catch(error => {
-                console.log(error);
-                alert(error.message);
-            });
-    };
+        setLoading(true)
+        const data = {
+            email: email.toLowerCase(),
+            password: password,
+        }
+        registerUser(data)
+        .then(response => {
+            console.log("Successfully added user login with email: '" + data.email + "'")
+            handleLogin()
+        })
+        .catch(err => {
+            alert(err)
+        })
+};
         return (
 
 

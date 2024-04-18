@@ -1,21 +1,50 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Button } from 'react-native';
+import { Alert, ScrollView, View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { Checkbox } from 'react-native-paper';
+import { Button, Checkbox } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
+import { FIREBASE_AUTH, FIREBASE_DB } from "firebase/auth";
 
 function EditProfileScreen() {
     // State definitions
-    const [currentYear, setCurrentYear] = useState('1');
-    const [currentMajor, setMajor] = useState('biology');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [currentMajor, setMajor] = useState('');
+    const [currentYear, setCurrentYear] = useState('');
     const [studyStyles, setStudyStyles] = useState({
         visual: false,
         auditory: false,
         readWrite: false,
-        kinesthetic: false,
+        kinesthetic: false
     });
-
+    const [locationPrefs, setLocPrefs] = useState({
+        Library: false,
+        Cafe: false,
+        Class: false,
+        Outdoors: false
+    });
+    const [areasToImprove, setAreasToImprove] = useState({
+        TimeManage: false,
+        Notetake: false,
+        CritThink: false,
+        ProbSolv: false,
+        CommSkills: false
+    });
+    const [shortTermGoals, setShortTermGoals] = useState({
+        NA: false,
+        GradeImprove: false,
+        LearnTechs: false,
+        OnTimeAssign: false,
+        PrepareExam: false
+    });
+    const [longTermGoals, setLongTermGoals] = useState({
+        NA: false,
+        GradHonors: false,
+        PrestigeProgram: false,
+        StrongFoundation: false,
+        ResearchSkills: false
+    });
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -60,12 +89,6 @@ function EditProfileScreen() {
         { label: 'Music', value: 'music' }
     ];
     const locationOptions = ['Library', 'Cafe', 'Class', 'Outdoors'];
-    const [locationPrefs, setLocPrefs] = useState({
-        Library: false,
-        Cafe: false,
-        Class: false,
-        Outdoors: false,
-    });
     const handleLocationChange = (location) => {
         setLocationPrefs({ ...locationPrefs, [location]: !locationPrefs[location] });
     };
@@ -77,13 +100,6 @@ function EditProfileScreen() {
         OnTimeAssign: false,
         PrepareExam: false
     });
-    const [areasToImprove, setAreasToImprove] = useState({
-        TimeManage: false,
-        Notetake: false,
-        CritThink: false,
-        ProbSolv: false,
-        CommSkills: false
-    });
 
     const longTermGoalsOptions = ['N/A', 'Graduate with honors', 'Get into a prestigious program', 'Build a strong academic foundation', 'Develop research skills'];
     const [longTermGoal, setLongTermGoal] = useState({
@@ -94,9 +110,20 @@ function EditProfileScreen() {
         ResearchSkills: false
     });
 
+    const [buttonText, setButtonText] = useState('Submit');
     const handleSubmit = () => {
-        // Handle the form submission logic
-        console.log("Form submitted!");
+        const newData ={
+            firstName,
+            lastName,
+            major: currentMajor,
+            year: currentYear,
+            studyStyles,
+            locationPrefs,
+            areasToImprove,
+            shortTermGoals,
+            longTermGoals
+        }
+        
     };
 
     return (
@@ -108,8 +135,8 @@ function EditProfileScreen() {
                             <Icon name="camera" size={35} color="#fff" style={styles.icon} />
                             <Text>Insert Profile Picture</Text>
                         </TouchableOpacity>
-                        <TextInput style={styles.input} placeholder="First Name" />
-                        <TextInput style={styles.input} placeholder="Last Name" />
+                        <TextInput style={styles.input} value={firstName} placeholder="First Name"onChangeText={setFirstName} />
+                        <TextInput style={styles.input} value={lastName} placeholder="Last Name" onChangeText={setLastName}/>
                         <View style={styles.pickerContainer}>
                             <Text>Select Your Major</Text>
                             <Picker
@@ -156,7 +183,7 @@ function EditProfileScreen() {
                         <View style={styles.checkboxRow}>
                             <Text>Areas to Improve</Text>
                             <Checkbox status={areasToImprove.TimeManage ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, TimeManage: !areasToImprove.TimeManage })} />
-                            <Text>Time Management</Text> 
+                            <Text>Time Management</Text>
                             <Checkbox status={areasToImprove.Notetake ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, Notetake: !areasToImprove.Notetake })} />
                             <Text>Note Taking</Text>
                             <Checkbox status={areasToImprove.CritThink ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, CritThink: !areasToImprove.CritThink })} />
@@ -170,7 +197,7 @@ function EditProfileScreen() {
                         <View style={styles.checkboxRow}>
                             <Text>Academic Goals (Short-term)</Text>
                             <Checkbox status={shortTermGoal.NA ? 'checked' : 'unchecked'} onPress={() => setShortTermGoal({ ...shortTermGoal, NA: !shortTermGoal.NA })} />
-                            <Text>N/A</Text> 
+                            <Text>N/A</Text>
                             <Checkbox status={shortTermGoal.GradeImprove ? 'checked' : 'unchecked'} onPress={() => setShortTermGoal({ ...shortTermGoal, GradeImprove: !shortTermGoal.GradeImprove })} />
                             <Text>Improve grades</Text>
                             <Checkbox status={shortTermGoal.LearnTechs ? 'checked' : 'unchecked'} onPress={() => setShortTermGoal({ ...shortTermGoal, LearnTechs: !shortTermGoal.LearnTechs })} />
@@ -181,9 +208,9 @@ function EditProfileScreen() {
                             <Text>Prepare for exams</Text>
                         </View>
                         <View style={styles.checkboxRow}>
-                            <Text>Academic Goals (Long-term)</Text>    
+                            <Text>Academic Goals (Long-term)</Text>
                             <Checkbox status={longTermGoal.NA ? 'checked' : 'unchecked'} onPress={() => setLongTermGoal({ ...longTermGoal, NA: !longTermGoal.NA })} />
-                            <Text>N/A</Text> 
+                            <Text>N/A</Text>
                             <Checkbox status={longTermGoal.GradHonors ? 'checked' : 'unchecked'} onPress={() => setLongTermGoal({ ...longTermGoal, GradHonors: !longTermGoal.GradHonors })} />
                             <Text>Graduate with honors</Text>
                             <Checkbox status={longTermGoal.PrestigeProgram ? 'checked' : 'unchecked'} onPress={() => setLongTermGoal({ ...longTermGoal, PrestigeProgram: !longTermGoal.PrestigeProgram })} />
@@ -196,7 +223,9 @@ function EditProfileScreen() {
                         </View>
 
                     </View>
-                    <Button title="Submit" onPress={handleSubmit} style={styles.submitButton} />
+                    <Button mode="contained" onPress={handleSubmit}>
+                        {buttonText}
+                    </Button>
                 </ScrollView>
             </View>
         </SafeAreaView>

@@ -33,10 +33,11 @@ function MainApp(){
                         iconName = focused ? 'home' : 'home-outline';
                     } 
                     else if (rn  === settingsName){
-                        iconName === focused ? 'user' : 'user-outline';
-                    } else if (rn === editProfileName){
                         iconName = focused ? 'settings' : 'settings-outline';
+                    } else if (rn === editProfileName){
+                        iconName = focused ? 'person' : 'person-outline';
                     }
+
 
                     return<Ionicons name={iconName} size={size} color={color}/>
                 },
