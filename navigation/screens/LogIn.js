@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/core'
-import React , { useEffect, useState } from 'react'
-import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React , { createContext, useContext,useEffect, useState } from 'react'
+import { Alert, KeyboardAvoidingView, TextInput, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { FIREBASE_AUTH } from '../../firebaseConfig';
 import MainContainer from '../mainContainer'
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { saveUserEmail } from '../../verifyEmail';
 
 
 const Login = () => {
@@ -40,134 +41,111 @@ const Login = () => {
     };
     
     
-    const handleRegistration = () => {
+    const handleRegistration = async () => {
         console.log("Registration button pressed");
-        createUserWithEmailAndPassword(auth,email, password)
-            .then(userCredentials => {
-                const user = userCredentials.user;
-                console.log('Registered with email:', user.email);
-                return setDoc(doc(db, "users", user.uid), {
-                    email: user.email,
-                });    
-            })
-            .then(() => {
-                Alert.alert("Success", "Registration successful and data saved to Firestore.");
-            })    
-            .catch(error => {
-                console.log(error);
-                alert(error.message);
+        try {
+            const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredentials.user;
+            console.log('Registered with email:', user.email);
+            
+            await saveUserEmail(email);
+            await setDoc(doc(db, "users", user.uid), {
+                email: user.email,
             });
+    
+            Alert.alert("Success", "Registration successful and data saved to Firestore.");
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
     };
     
-        return (
+    
+    return (
+        <View style={styles.container}>
+            <KeyboardAvoidingView behavior="padding" style={{ width: '100%' }}>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder='Email'
+                        value={email}
+                        onChangeText={setEmail}
+                        style={styles.input}
+                    />
+                    <TextInput
+                        placeholder='Password'
+                        value={password}
+                        onChangeText={setPassword}
+                        style={styles.input}
+                        secureTextEntry
+                    />
+                </View>
 
-
-        <KeyboardAvoidingView
-            behavior="padding"
-        >
-        <View style={styles.inputContainer}>
-            <TextInput
-                placeholder='Email'
-                value={email}
-                onChangeText={text => setEmail(text)}
-                style={styles.input}
-            />
-            <TextInput
-                placeholder='Password'
-                value={password }
-                onChangeText={text => setPassword(text)}
-                style={styles.input}
-                secureTextEntry
-            />
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        onPress={handleLogin}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>Login</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={handleRegistration}
+                        style={[styles.button, styles.buttonOutline]}
+                    >
+                        <Text style={styles.buttonOutlineText}>Register</Text>
+                    </TouchableOpacity>
+                </View>
+            </KeyboardAvoidingView>
         </View>
-
-        <View style={styles.buttonContainer}>
-            <TouchableOpacity
-                onPress={handleLogin}
-                style={styles.button}
-            >
-                <Text style={styles.buttonText}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={handleRegistration}
-                style={[styles.button, styles.buttonOutline]}
-            >
-                <Text style={styles.buttonOutlineText}>Register</Text>
-            </TouchableOpacity>
-
-
-        </View>
-
-
-        </KeyboardAvoidingView>
-    )
-}
-
-export default Login;
-
+    );
+};
 
 const styles = StyleSheet.create({
-
-    container:{
+    container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#d91129',
     },
-
-    inputContainer:{
-        width:'80%',
+    inputContainer: {
+        width: '80%',
+        alignSelf: 'center',
     },
-
-    input:{
+    input: {
         backgroundColor: 'white',
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,
         marginTop: 5,
     },
-
-    button:{
-        backgroundColor:'#0782f9',
-        width:'100%',
-        padding:15,
-        borderRadius:10,
+    button: {
+        backgroundColor: '#0782f9',
+        width: '100%',
+        padding: 15,
+        borderRadius: 10,
         alignItems: 'center',
     },
-
-    buttonText:{
+    buttonText: {
         color: 'white',
         fontWeight: '700',
         fontSize: 16,
     },
-
-    buttonContainer:{
+    buttonContainer: {
         width: '60%',
-        justifyContent:'center',
+        justifyContent: 'center',
         alignItems: 'center',
-        marginTop:40,
+        marginTop: 40,
     },
-
-    buttonOutline:{
+    buttonOutline: {
         backgroundColor: 'white',
         marginTop: 5,
         borderColor: '#0782f9',
         borderWidth: 2,
     },
-
-    buttonOutlineText:{
+    buttonOutlineText: {
         color: '#0782f9',
         fontWeight: '700',
         fontSize: 16,
     },
+});
 
-
-    titleText:{
-        color: 'white',
-        fontWeight: '700',
-        fontSize: 50,
-        marginBottom:250,
-    }
-
-
-})
+export default Login;

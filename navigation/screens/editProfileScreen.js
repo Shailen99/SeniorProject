@@ -5,7 +5,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Button, Checkbox } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { FIREBASE_AUTH, FIREBASE_DB } from "firebase/auth";
-
 function EditProfileScreen() {
     // State definitions
     const [firstName, setFirstName] = useState('');
@@ -123,7 +122,7 @@ function EditProfileScreen() {
             shortTermGoals,
             longTermGoals
         }
-        
+        setButtonText(newData.longTermGoals);
     };
 
     return (

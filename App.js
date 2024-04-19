@@ -7,8 +7,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import LoginScreen from './navigation/screens/LogIn'
 import HomeScreen from './navigation/screens/HomeScreen';
 import { PaperProvider } from 'react-native-paper';
+import { enableScreens } from 'react-native-screens';
 
 const homeName = 'Home';
+enableScreens();
 
 
 //check if user logged in
@@ -20,7 +22,6 @@ export default function App() {
       <PaperProvider>
       <MainContainer/>
       </PaperProvider>
-
     );
 }
 
