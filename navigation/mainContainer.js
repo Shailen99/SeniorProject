@@ -45,7 +45,7 @@ function MainApp(){
 
             <Tab.Screen name={homeName} component={HomeScreen}/>
             <Tab.Screen name={editProfileName} component={editProfileScreen}/>
-             <Tab.Screen name={settingsName} component={SettingsScreen}/>
+            <Tab.Screen name={settingsName} component={SettingsScreen}/>
 
             </Tab.Navigator>
     )
