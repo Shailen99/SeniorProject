@@ -1,14 +1,14 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { Alert,SafeAreaView, View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Button } from "react-native";
+import { Alert, SafeAreaView, View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Button } from "react-native";
 import { useNavigation } from '@react-navigation/core';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import tw from "twrnc";
 import { Picker } from 'react-native';
 import { Checkbox } from 'react-native-paper';
-import { getFirestore, addDoc, doc, updateDoc,collection } from "firebase/firestore";
+import { getFirestore, addDoc, doc, updateDoc, collection } from "firebase/firestore";
 import { getDoc, getDocs, setDoc } from "firebase/firestore";
 import { initializeApp } from 'firebase/app';
-import 'firebase/firestore'; 
+import 'firebase/firestore';
 
 
 
@@ -26,7 +26,7 @@ function HomeScreen() {
         { label: '2nd Year', value: '2' },
         { label: '3rd Year', value: '3' },
         { label: '4th Year', value: '4' },
-        { label: 'Graduate', value: 'graduate' }, 
+        { label: 'Graduate', value: 'graduate' },
     ];
     const majorOptions = [
         { label: 'Biology', value: 'biology' },
@@ -51,33 +51,36 @@ function HomeScreen() {
         { label: 'Music', value: 'music' }
     ];
     const styleOptions = [{ label: 'Visual', value: 'visual' },
-        { label: 'Auditory', value: 'auditory' },
-        { label: 'ReadWrite', value: 'readWrite' },
-        { label: 'Kinesthetic', value: 'kinesthetic' }
+    { label: 'Auditory', value: 'auditory' },
+    { label: 'ReadWrite', value: 'readWrite' },
+    { label: 'Kinesthetic', value: 'kinesthetic' }
     ];
     const locationOptions = [{ label: 'Library', value: 'Library' },
-        { label: 'Cafe', value: 'Cafe' },
-        { label: 'Class', value: 'Class' },
-        { label: 'Outdoors', value: 'Outdoors' }
+    { label: 'Cafe', value: 'Cafe' },
+    { label: 'Class', value: 'Class' },
+    { label: 'Outdoors', value: 'Outdoors' }
     ];
     const areaOptions = [{ label: 'TimeManage', value: 'TimeManage' },
-        { label: 'Notetake', value: 'Notetake' },
-        { label: 'CritThink', value: 'CritThink' },
-        { label: 'ProbSolv', value: 'ProbSolv' },
-        { label: 'CommSkills', value: 'CommSkills' }
+    { label: 'Notetake', value: 'Notetake' },
+    { label: 'CritThink', value: 'CritThink' },
+    { label: 'ProbSolv', value: 'ProbSolv' },
+    { label: 'CommSkills', value: 'CommSkills' }
     ];
     const shortTermGoalsOptions = [{ label: 'Improve grades', value: 'GradeImprove' },
-        { label: 'Learn new study techniques', value: 'LearnTechs' },
-        { label: 'Complete assignments on time', value: 'OnTimeAssign' },
-        { label: 'Prepare for exams', value: 'Prepare for exams' }
+    { label: 'Learn new study techniques', value: 'LearnTechs' },
+    { label: 'Complete assignments on time', value: 'OnTimeAssign' },
+    { label: 'Prepare for exams', value: 'Prepare for exams' }
     ];
     const longTermGoalsOptions = [{ label: 'Graduate with honors', value: 'GradHonors' },
-        {
-            label: 'Get into a prestigious program', value: 'PrestigeProgram' },
-        {
-            label: 'Build a strong academic foundation', value: 'StrongFoundation' },
-        {
-            label: 'Develop research skills', value: 'ResearchSkills' }
+    {
+        label: 'Get into a prestigious program', value: 'PrestigeProgram'
+    },
+    {
+        label: 'Build a strong academic foundation', value: 'StrongFoundation'
+    },
+    {
+        label: 'Develop research skills', value: 'ResearchSkills'
+    }
     ];
 
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -140,7 +143,7 @@ function HomeScreen() {
 
     const firebaseApp = initializeApp(firebaseConfig);
 
- 
+
     const db = getFirestore(firebaseApp);
     const currentUser = auth.currentUser;
     const selfID = self.uid;
@@ -298,7 +301,8 @@ function HomeScreen() {
         <SafeAreaView style={styles.flexContainer}>
             <View style={styles.container}>
                 <View style={styles.profileSection}>
-                    <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px' }} />   
+                    {previewUrl && (
+                        <img src={previewUrl} alt="Preview" style={styles.profilePicture} />)}
                     <Text style={styles.profileContent}>Email: {userEmail}</Text>
                     <Text style={styles.profileContent}>First Name: {firstName}</Text>
                     <Text style={styles.profileContent}>Last Name: {lastName}</Text>
@@ -316,7 +320,7 @@ function HomeScreen() {
                                     ))}
                                 </ul>
                             </div>
-                            
+
                         </ScrollView>
                     </View>
                     <TouchableOpacity style={styles.searchButton} onPress={() => setModalVisible(true)}>
@@ -357,7 +361,7 @@ function HomeScreen() {
                                         ))}
                                     </Picker>
                                 </View>
-                                
+
                                 <View style={styles.filterDropdown}>
                                     <Text style={styles.filterTitle}>Study Style:</Text>
                                     <Picker
@@ -441,16 +445,17 @@ function HomeScreen() {
                                 <View style={styles.row}>
                                     {matchedUsers.map((user, index) => (
                                         <View key={index} style={styles.userBox}>
-                                            <Text style={styles.modalText}>{user.firstName} {user.lastName}</Text>
-                                            <Text style={styles.modalText}>Year: {user.year}</Text>
-                                            <Text style={styles.modalText}>Major: {user.major}</Text>
-                                            {/* 添加按钮 */}
+                                            <Text style={styles.userName}>{user.firstName} {user.lastName}</Text>
+                                            <Text style={styles.userInfo}>Year: {user.year}</Text>
+                                            <Text style={styles.userInfo}>Major: {user.major}</Text>
+                                            {/* Add a button to add friend */}
                                             <Button
                                                 title="Add Friend"
                                                 onPress={() => handleAddFriend(user)}
                                                 style={styles.addButton}
                                             />
                                         </View>
+
                                     ))}
                                 </View>
                                 <Button
@@ -481,24 +486,36 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         padding: 35,
         alignItems: "center",
-        width: '90%', 
-        maxHeight: '80%', 
+        width: '90%',
+        maxHeight: '80%',
     },
     userBox: {
         flex: 1,
         margin: 5,
         padding: 10,
-        backgroundColor: "#f9f9f9",
-        borderRadius: 10,
+        backgroundColor: 'F2F2F2',
+        borderRadius: 5,
         alignItems: "center",
         justifyContent: "center",
         minHeight: 100,
+    },
+    userName: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    userInfo: {
+        fontSize: 14,
+        marginBottom: 3,
     },
     modalText: {
         fontSize: 16,
         textAlign: "center",
         marginBottom: 5,
     },
+    addButton: {
+        marginTop: 10, // Adjust the margin top as needed
+    },    
     row: {
         flexDirection: 'row',
         width: '100%',
@@ -509,44 +526,55 @@ const styles = StyleSheet.create({
     },
     flexContainer: {
         flex: 1,
+        backgroundColor: '#ffffff', // Set background color to white
     },
     container: {
         flexDirection: 'row',
         flex: 1,
-        backgroundColor: '#f0f0f0',
+        paddingTop: 20, // Add paddingTop to shift content up
     },
     profileSection: {
-        flex: 3,
-        backgroundColor: '#DDEFFF',
+        flex: 1,
+        backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
+        padding: 20,
+    },
+    profilePicture: {
+        width: 250, // Increase width of profile picture
+        height: 250, // Increase height of profile picture
+        borderRadius: 125, // Adjust border radius to make it circular
+        marginBottom: 20,
     },
     profileContent: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
+        fontSize: 16,
+        marginBottom: 10,
     },
     rightSideSection: {
-        flex: 2,
-        flexDirection: 'column',
+        flex: 1,
+        padding: 20,
     },
     connectionsSection: {
         backgroundColor: '#EFF3FF',
-        padding: 10,
         borderRadius: 10,
+        marginBottom: 20,
+        padding: 10,
     },
-    connectionItem: {
-        backgroundColor: '#FFFFFF',
-        padding: 10,
-        borderRadius: 10,
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    friendsList: {
+        marginBottom: 10,
+    },
+    friendItem: {
+        fontSize: 16,
         marginBottom: 5,
-        width: '100%',
     },
     searchButton: {
-        marginTop: 10,
-        backgroundColor: '#007BFF',
-        padding: 10,
+        backgroundColor: '#81dff6',
+        paddingVertical: 15,
         borderRadius: 10,
         alignItems: 'center',
     },

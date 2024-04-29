@@ -5,21 +5,21 @@ import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, doc, getD
 import { Alert, SafeAreaView, View, Text, TouchableOpacity, ScrollView, StyleSheet, Modal, Button,TextInput } from "react-native";
 
 const firebaseConfig = {
-    apiKey: "ÄãµÄAPI_KEY",
-    authDomain: "ÄãµÄAUTH_DOMAIN",
-    projectId: "ÄãµÄPROJECT_ID",
-    storageBucket: "ÄãµÄSTORAGE_BUCKET",
-    messagingSenderId: "ÄãµÄMESSAGING_SENDER_ID",
-    appId: "ÄãµÄAPP_ID",
-    measurementId: "ÄãµÄMEASUREMENT_ID"
+    apiKey: "ï¿½ï¿½ï¿½API_KEY",
+    authDomain: "ï¿½ï¿½ï¿½AUTH_DOMAIN",
+    projectId: "ï¿½ï¿½ï¿½PROJECT_ID",
+    storageBucket: "ï¿½ï¿½ï¿½STORAGE_BUCKET",
+    messagingSenderId: "ï¿½ï¿½ï¿½MESSAGING_SENDER_ID",
+    appId: "ï¿½ï¿½ï¿½APP_ID",
+    measurementId: "ï¿½ï¿½ï¿½MEASUREMENT_ID"
 };
 
-// È·±£ Firebase Ö»³õÊ¼»¯Ò»´Î
+// È·ï¿½ï¿½ Firebase Ö»ï¿½ï¿½Ê¼ï¿½ï¿½Ò»ï¿½ï¿½
 let firebaseApp;
 if (!getApps().length) {
     firebaseApp = initializeApp(firebaseConfig);
 } else {
-    firebaseApp = getApps()[0]; // Èç¹ûÒÑ¾­³õÊ¼»¯£¬Ê¹ÓÃÒÑÓÐµÄÊµÀý
+    firebaseApp = getApps()[0]; // ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Êµï¿½ï¿½
 }
 
 const auth = getAuth(firebaseApp);
@@ -34,9 +34,9 @@ function ChatApp() {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
-                setUser(user); // ÉèÖÃÓÃ»§×´Ì¬
+                setUser(user); // ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½×´Ì¬
             } else {
-                setUser(null); // Çå³ýÓÃ»§×´Ì¬
+                setUser(null); // ï¿½ï¿½ï¿½ï¿½Ã»ï¿½×´Ì¬
             }
         });
         return () => unsubscribe();
@@ -69,10 +69,10 @@ function ChatApp() {
 
         if (!userDocSnap.exists()) {
             console.error("No such user!");
-            return; // Èç¹ûÓÃ»§ÐÅÏ¢²»´æÔÚ£¬ÔòÖÕÖ¹²Ù×÷
+            return; // ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½ï¿½
         }
 
-        const userInfo = userDocSnap.data(); // »ñÈ¡ÓÃ»§ÎÄµµÖÐµÄÊý¾Ý
+        const userInfo = userDocSnap.data(); // ï¿½ï¿½È¡ï¿½Ã»ï¿½ï¿½Äµï¿½ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½
 
         if (!newMessage.trim() || !currentChatRoom) return;
 
@@ -91,88 +91,133 @@ function ChatApp() {
     };
 
     return (
-        <div>
+        <SafeAreaView style={styles.container}>
             {user ? (
-                <div>
-                    <h1>Welcome, {user.displayName}</h1>
-                    <div>
-                        <h2>Chat Rooms</h2>
-                        <div>
-                            <button onClick={() => handleChatRoomSelect("chatRoom1")}>
-                                Chat Room 1
-                            </button>
-                            <button onClick={() => handleChatRoomSelect("chatRoom2")}>
-                                Chat Room 2
-                            </button>
-                            <button onClick={() => handleChatRoomSelect("chatRoom3")}>
-                                Chat Room 3
-                            </button>
-                        </div>
-                    </div>
-                    <div style={{ padding: 10 }}>
-                        <h2>Chat Room: {currentChatRoom}</h2>
-                        <div style={{ height: 400, overflowY: 'auto', marginBottom: 10 }}>
+                <View style={styles.chatContainer}>
+                    <View style={styles.chatRooms}>
+                        <Text style={styles.header}>Chat Rooms</Text>
+                        <ScrollView>
+                            <TouchableOpacity style={styles.button} onPress={() => handleChatRoomSelect("chatRoom1")}>
+                                <Text>Chat Room 1</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={() => handleChatRoomSelect("chatRoom2")}>
+                                <Text>Chat Room 2</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={() => handleChatRoomSelect("chatRoom3")}>
+                                <Text>Chat Room 3</Text>
+                            </TouchableOpacity>
+                        </ScrollView>
+                    </View>
+                    <View style={styles.chatMessages}>
+                        <ScrollView>
                             {messages.map((message) => (
-                                <div key={message.id}>
-                                    <strong>{message.name}:</strong>
-                                    <span> {message.text}</span>
-                                    <div>{new Date(message.timestamp).toLocaleString()}</div>
-                                </div>
+                                <View key={message.id} style={message.sender === user.uid ? styles.myMessage : styles.otherMessage}>
+                                    <View style={styles.messageContent}>
+                                        <Text style={styles.messageSender}>{message.name}</Text>
+                                        <Text>{message.text}</Text>
+                                    </View>
+                                </View>
                             ))}
-                        </div>
-                        <input
-                            type="text"
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                            placeholder="Type your message here..."
-                            style={{ padding: 10, marginBottom: 10, width: '100%', boxSizing: 'border-box' }}
-                        />
-                        <button onClick={handleMessageSubmit}>Send</button>
-                    </div>
-                </div>
+                        </ScrollView>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Type your message"
+                                value={newMessage}
+                                onChangeText={setNewMessage}
+                            />
+                            <Button title="Send" onPress={handleMessageSubmit} />
+                        </View>
+                    </View>
+                </View>
             ) : (
-                <div>
-                    <h1>Chat App</h1>
-                    <p>User authentication is required to access this application.</p>
-                </div>
+                <View style={styles.center}>
+                    <Text style={styles.header}>Chat App</Text>
+                    <Text>User authentication is required to access this application.</Text>
+                </View>
             )}
-        </div>
+        </SafeAreaView>
     );
-
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
-        justifyContent: 'space-between'  // È·±£ScrollViewºÍÊäÈë¿òÖ®¼äÓÐ¿Õ¼ä·Ö²¼
     },
-    header: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10
+    center: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     chatContainer: {
-        flex: 1,  // ¸øÓè×ã¹»µÄ¿Õ¼ä¿ÉÒÔ¹ö¶¯
-        marginBottom: 10
+        flex: 1,
+        flexDirection: 'row',
     },
-    messageBox: {
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    chatRooms: {
+        width: '30%',
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        borderRadius: 5,
         padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc'
     },
-    messageName: {
-        fontWeight: 'bold'
+    button: {
+        backgroundColor: '#DDDDDD',
+        padding: 10,
+        borderRadius: 5,
+        marginBottom: 10,
+    },
+    chatMessages: {
+        flex: 1,
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        borderRadius: 5,
+        padding: 10,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+    },
+    myMessage: {
+        alignSelf: 'flex-end',
+        marginVertical: 5,
+        padding: 10,
+        backgroundColor: '#DCF8C6',
+        borderRadius: 10,
+        maxWidth: '70%',
+    },
+    otherMessage: {
+        alignSelf: 'flex-start',
+        marginVertical: 5,
+        padding: 10,
+        backgroundColor: '#E5E5EA',
+        borderRadius: 10,
+        maxWidth: '70%',
+    },
+    messageContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    messageSender: {
+        marginRight: 5,
+        fontWeight: 'bold',
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
+        flex: 1,
+        marginRight: 10,
         padding: 10,
-        marginBottom: 10,
-        minHeight: 50, // ÉèÖÃÒ»¸ö×îÐ¡¸ß¶È±£Ö¤ÊäÈë¿òÒ×ÓÚµã»÷
-        fontSize: 16 // Ôö´ó×ÖÌåÊ¹ÊäÈë¸üÈÝÒ×
-    }
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        borderRadius: 5,
+    },
 });
 
 export default ChatApp;
-

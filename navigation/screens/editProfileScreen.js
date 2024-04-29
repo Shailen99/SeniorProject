@@ -212,7 +212,7 @@ function EditProfileScreen() {
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <View style={styles.form}>
-                        <div>
+                        <View style={styles.profilePictureContainer}>
                             <Text>Insert Profile Picture</Text>
                             <input type="file" onChange={handleFileChange} accept="image/*" />
                             {previewUrl && (
@@ -221,23 +221,26 @@ function EditProfileScreen() {
                                     <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '200px' }} />
                                 </div>
                             )}
-                        </div>
+                        </View>
                         <TextInput style={styles.input} value={firstName} placeholder="First Name" onChangeText={setFirstName} />
                         <TextInput style={styles.input} value={lastName} placeholder="Last Name" onChangeText={setLastName} />
-                        <View style={styles.pickerContainer}>
-                            <Text>Select Your Major</Text>
+                        <View style={[styles.columnContainer, { marginRight: 10, marginBottom: 10 }]}>
+                            <Text style={styles.inputLabel}>Select Your Major</Text>
                             <Picker
+                                style={styles.picker}
                                 selectedValue={currentMajor}
                                 onValueChange={(itemValue, itemIndex) =>
                                     setMajor(itemValue)
                                 }>
                                 {majorOptions.map((option, index) => (
                                     <Picker.Item key={index} label={option.label} value={option.value} />
-                                ))}                            </Picker>
+                                ))}
+                            </Picker>
                         </View>
-                        <View style={styles.pickerContainer}>
-                            <Text>What's Your Grade Standing</Text>
+                        <View style={styles.columnContainer}>
+                            <Text style={styles.inputLabel}>What's Your Grade Standing</Text>
                             <Picker
+                                style={styles.picker}
                                 selectedValue={currentYear}
                                 onValueChange={(itemValue, itemIndex) => setCurrentYear(itemValue)}>
                                 {yearOptions.map((option, index) => (
@@ -245,74 +248,211 @@ function EditProfileScreen() {
                                 ))}
                             </Picker>
                         </View>
-                        <View style={styles.checkboxRow}>
-                            <Text>What's Your Study Style?</Text>
-                            <Checkbox status={studyStyles.visual ? 'checked' : 'unchecked'} onPress={() => setStudyStyles({ ...studyStyles, visual: !studyStyles.visual })} />
-                            <Text>Visual</Text>
-                            <Checkbox status={studyStyles.auditory ? 'checked' : 'unchecked'} onPress={() => setStudyStyles({ ...studyStyles, auditory: !studyStyles.auditory })} />
-                            <Text>Auditory</Text>
-                            <Checkbox status={studyStyles.readWrite ? 'checked' : 'unchecked'} onPress={() => setStudyStyles({ ...studyStyles, readWrite: !studyStyles.readWrite })} />
-                            <Text>Read/Write</Text>
-                            <Checkbox status={studyStyles.kinesthetic ? 'checked' : 'unchecked'} onPress={() => setStudyStyles({ ...studyStyles, kinesthetic: !studyStyles.kinesthetic })} />
-                            <Text>Kinesthetic</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <Text>Location Preferences</Text>
-                            <Checkbox status={locationPrefs.Library ? 'checked' : 'unchecked'} onPress={() => setLocPrefs({ ...locationPrefs, Library: !locationPrefs.Library })} />
-                            <Text>Library</Text>
-                            <Checkbox status={locationPrefs.Cafe ? 'checked' : 'unchecked'} onPress={() => setLocPrefs({ ...locationPrefs, Cafe: !locationPrefs.Cafe })} />
-                            <Text>Cafe</Text>
-                            <Checkbox status={locationPrefs.Class ? 'checked' : 'unchecked'} onPress={() => setLocPrefs({ ...locationPrefs, Class: !locationPrefs.Class })} />
-                            <Text>Classes</Text>
-                            <Checkbox status={locationPrefs.Outdoors ? 'checked' : 'unchecked'} onPress={() => setLocPrefs({ ...locationPrefs, Outdoors: !locationPrefs.Outdoors })} />
-                            <Text>Outdoors</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <Text>Areas to Improve</Text>
-                            <Checkbox status={areasToImprove.TimeManage ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, TimeManage: !areasToImprove.TimeManage })} />
-                            <Text>Time Management</Text>
-                            <Checkbox status={areasToImprove.Notetake ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, Notetake: !areasToImprove.Notetake })} />
-                            <Text>Note Taking</Text>
-                            <Checkbox status={areasToImprove.CritThink ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, CritThink: !areasToImprove.CritThink })} />
-                            <Text>Critical Thinking</Text>
-                            <Checkbox status={areasToImprove.ProbSolv ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, ProbSolv: !areasToImprove.ProbSolv })} />
-                            <Text>Problem Solving</Text>
-                            <Checkbox status={areasToImprove.CommSkills ? 'checked' : 'unchecked'} onPress={() => setAreasToImprove({ ...areasToImprove, CommSkills: !areasToImprove.CommSkills })} />
-                            <Text>Communication Skills </Text>
+                        <View style={styles.rowContainer}>
+                            <View style={styles.sectionContainer}>
+                                <View style={styles.columnContainer}>
+                                    <Text>What's Your Study Style?</Text>
+                                    <View style={styles.checkboxRow}>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={studyStyles.visual ? 'checked' : 'unchecked'}
+                                                onPress={() => setStudyStyles({ ...studyStyles, visual: !studyStyles.visual })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Visual</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={studyStyles.auditory ? 'checked' : 'unchecked'}
+                                                onPress={() => setStudyStyles({ ...studyStyles, auditory: !studyStyles.auditory })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Auditory</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={studyStyles.readWrite ? 'checked' : 'unchecked'}
+                                                onPress={() => setStudyStyles({ ...studyStyles, readWrite: !studyStyles.readWrite })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Read/Write</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={studyStyles.kinesthetic ? 'checked' : 'unchecked'}
+                                                onPress={() => setStudyStyles({ ...studyStyles, kinesthetic: !studyStyles.kinesthetic })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Kinesthetic</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <View style={styles.sectionContainer}>
+                                <View style={styles.columnContainer}>
+                                    <Text>Location Preferences</Text>
+                                    <View style={styles.checkboxRow}>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={locationPrefs.Library ? 'checked' : 'unchecked'}
+                                                onPress={() => setLocPrefs({ ...locationPrefs, Library: !locationPrefs.Library })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Library</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={locationPrefs.Cafe ? 'checked' : 'unchecked'}
+                                                onPress={() => setLocPrefs({ ...locationPrefs, Cafe: !locationPrefs.Cafe })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Cafe</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={locationPrefs.Class ? 'checked' : 'unchecked'}
+                                                onPress={() => setLocPrefs({ ...locationPrefs, Class: !locationPrefs.Class })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Classes</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={locationPrefs.Outdoors ? 'checked' : 'unchecked'}
+                                                onPress={() => setLocPrefs({ ...locationPrefs, Outdoors: !locationPrefs.Outdoors })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Outdoors</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.sectionContainer}>
+                                <View style={styles.columnContainer}>
+                                    <Text>Areas to Improve</Text>
+                                    <View style={styles.checkboxRow}>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={areasToImprove.TimeManage ? 'checked' : 'unchecked'}
+                                                onPress={() => setAreasToImprove({ ...areasToImprove, TimeManage: !areasToImprove.TimeManage })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Time Management</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={areasToImprove.Notetake ? 'checked' : 'unchecked'}
+                                                onPress={() => setAreasToImprove({ ...areasToImprove, Notetake: !areasToImprove.Notetake })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Note Taking</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={areasToImprove.CritThink ? 'checked' : 'unchecked'}
+                                                onPress={() => setAreasToImprove({ ...areasToImprove, CritThink: !areasToImprove.CritThink })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Critical Thinking</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={areasToImprove.ProbSolv ? 'checked' : 'unchecked'}
+                                                onPress={() => setAreasToImprove({ ...areasToImprove, ProbSolv: !areasToImprove.ProbSolv })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Problem Solving</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={areasToImprove.CommSkills ? 'checked' : 'unchecked'}
+                                                onPress={() => setAreasToImprove({ ...areasToImprove, CommSkills: !areasToImprove.CommSkills })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Communication Skills</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                            <View style={styles.sectionContainer}>
+                                <View style={styles.columnContainer}>
+                                    <Text>Academic Goals (Short-term)</Text>
+                                    <View style={styles.checkboxRow}>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={shortTermGoals.NA ? 'checked' : 'unchecked'}
+                                                onPress={() => setShortTermGoals({ ...shortTermGoals, NA: !shortTermGoals.NA })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>N/A</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={shortTermGoals.GradeImprove ? 'checked' : 'unchecked'}
+                                                onPress={() => setShortTermGoals({ ...shortTermGoals, GradeImprove: !shortTermGoals.GradeImprove })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Improve grades</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={shortTermGoals.LearnTechs ? 'checked' : 'unchecked'}
+                                                onPress={() => setShortTermGoals({ ...shortTermGoals, LearnTechs: !shortTermGoals.LearnTechs })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Learn new study techniques</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={shortTermGoals.OnTimeAssign ? 'checked' : 'unchecked'}
+                                                onPress={() => setShortTermGoals({ ...shortTermGoals, OnTimeAssign: !shortTermGoals.OnTimeAssign })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Complete assignments on time</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={shortTermGoals.PrepareExam ? 'checked' : 'unchecked'}
+                                                onPress={() => setShortTermGoals({ ...shortTermGoals, PrepareExam: !shortTermGoals.PrepareExam })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Prepare for exams</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+
+                            <View style={styles.sectionContainer}>
+                                <View style={styles.columnContainer}>
+                                    <Text>Academic Goals (Long-term)</Text>
+                                    <View style={styles.checkboxRow}>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={longTermGoals.NA ? 'checked' : 'unchecked'}
+                                                onPress={() => setLongTermGoals({ ...longTermGoals, NA: !longTermGoals.NA })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>N/A</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={longTermGoals.GradHonors ? 'checked' : 'unchecked'}
+                                                onPress={() => setLongTermGoals({ ...longTermGoals, GradHonors: !longTermGoals.GradHonors })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Graduate with honors</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={longTermGoals.PrestigeProgram ? 'checked' : 'unchecked'}
+                                                onPress={() => setLongTermGoals({ ...longTermGoals, PrestigeProgram: !longTermGoals.PrestigeProgram })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Get into a prestigious program</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={longTermGoals.StrongFoundation ? 'checked' : 'unchecked'}
+                                                onPress={() => setLongTermGoals({ ...longTermGoals, StrongFoundation: !longTermGoals.StrongFoundation })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Build a strong academic foundation</Text>
+                                        </View>
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                status={longTermGoals.ResearchSkills ? 'checked' : 'unchecked'}
+                                                onPress={() => setLongTermGoals({ ...longTermGoals, ResearchSkills: !longTermGoals.ResearchSkills })}
+                                            />
+                                            <Text style={styles.checkboxLabel}>Develop research skills</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
 
                         </View>
-                        <View style={styles.checkboxRow}>
-                            <Text>Academic Goals (Short-term)</Text>
-                            <Checkbox status={shortTermGoals.NA ? 'checked' : 'unchecked'} onPress={() => setShortTermGoals({ ...shortTermGoals, NA: !shortTermGoals.NA })} />
-                            <Text>N/A</Text>
-                            <Checkbox status={shortTermGoals.GradeImprove ? 'checked' : 'unchecked'} onPress={() => setShortTermGoals({ ...shortTermGoals, GradeImprove: !shortTermGoals.GradeImprove })} />
-                            <Text>Improve grades</Text>
-                            <Checkbox status={shortTermGoals.LearnTechs ? 'checked' : 'unchecked'} onPress={() => setShortTermGoals({ ...shortTermGoals, LearnTechs: !shortTermGoals.LearnTechs })} />
-                            <Text>Learn new study techniques</Text>
-                            <Checkbox status={shortTermGoals.OnTimeAssign ? 'checked' : 'unchecked'} onPress={() => setShortTermGoals({ ...shortTermGoals, OnTimeAssign: !shortTermGoals.OnTimeAssign })} />
-                            <Text>Complete assignments on time</Text>
-                            <Checkbox status={shortTermGoals.PrepareExam ? 'checked' : 'unchecked'} onPress={() => setShortTermGoals({ ...shortTermGoals, PrepareExam: !shortTermGoals.PrepareExam })} />
-                            <Text>Prepare for exams</Text>
-                        </View>
-                        <View style={styles.checkboxRow}>
-                            <Text>Academic Goals (Long-term)</Text>
-                            <Checkbox status={longTermGoals.NA ? 'checked' : 'unchecked'} onPress={() => setLongTermGoals({ ...longTermGoals, NA: !longTermGoals.NA })} />
-                            <Text>N/A</Text>
-                            <Checkbox status={longTermGoals.GradHonors ? 'checked' : 'unchecked'} onPress={() => setLongTermGoals({ ...longTermGoals, GradHonors: !longTermGoals.GradHonors })} />
-                            <Text>Graduate with honors</Text>
-                            <Checkbox status={longTermGoals.PrestigeProgram ? 'checked' : 'unchecked'} onPress={() => setLongTermGoals({ ...longTermGoals, PrestigeProgram: !longTermGoals.PrestigeProgram })} />
-                            <Text>Get into a prestigious program</Text>
-                            <Checkbox status={longTermGoals.StrongFoundation ? 'checked' : 'unchecked'} onPress={() => setLongTermGoals({ ...longTermGoals, StrongFoundation: !longTermGoals.StrongFoundation })} />
-                            <Text>Build a strong academic foundation</Text>
-                            <Checkbox status={longTermGoals.ResearchSkills ? 'checked' : 'unchecked'} onPress={() => setLongTermGoals({ ...longTermGoals, ResearchSkills: !longTermGoals.ResearchSkills })} />
-                            <Text>Develop research skills</Text>
-
-                        </View>
-
+                        <Button mode="contained" onPress={handleSubmit} style={styles.submitButton}>
+                            {buttonText}
+                        </Button>
                     </View>
-                    <Button mode="contained" onPress={handleSubmit}>
-                        {buttonText}
-                    </Button>
                 </ScrollView>
             </View>
         </SafeAreaView>
@@ -323,56 +463,107 @@ const styles = StyleSheet.create({
     safeArea: {
         flex: 1,
     },
+    profilePictureContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10,
+        width: 300, // Adjust the width as needed
+        height: 300, // Adjust the height as needed to create a square
+        justifyContent: 'center', // Center the content horizontally
+        alignSelf: 'center', // Align the container itself to the center horizontally
+        overflow: 'hidden', // Ensure the content stays within the rounded square
+    },     
     container: {
         flex: 1,
-        paddingHorizontal: 20,
+        paddingHorizontal: 5,
+        backgroundColor: '#fff',
+        alignItems: 'stretch', // Stretch items horizontally
+        justifyContent: 'center',
+    },
+    sectionContainer: {
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10,
+        padding: 10,
+        width: 350,
+        marginTop: 7, // Adjust this value to control the space between sections
+        shadowColor: 'black',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     scrollViewContent: {
         flexGrow: 1,
         paddingBottom: 80,
     },
     form: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    imagePicker: {
-        alignItems: "center",
-        justifyContent: "center",
-        marginVertical: 10,
-    },
-    icon: {
-        opacity: 0.7,
-        marginBottom: 5,
+        alignItems: 'stretch',
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
+        fontFamily: 'sans-serif',
+        borderWidth: 2,
+        borderColor: 'black',
         padding: 10,
-        width: '100%',
-        marginBottom: 10,
+        marginBottom: 10, // Adjust this value to control the space between inputs
+        borderRadius: 10,
     },
     pickerContainer: {
-        borderWidth: 1,
-        borderColor: '#ccc',
+        fontFamily: 'sans-serif',
+        borderWidth: 2,
+        borderColor: 'black',
         padding: 10,
-        width: '100%',
+        marginBottom: 10, // Adjust this value to control the space between pickers
+        borderRadius: 10,
+    },
+    picker: {
+        borderWidth: 2,
+        borderColor: 'black',
+        borderRadius: 10,
+        color: 'black', // Text color
         marginBottom: 10,
+        fontFamily: 'sans-serif',
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 20, // Adjust this value to control the space between rows
+    },
+    columnContainer: {
+        flex: 1,
+        marginTop: 10, // Adjust this value to control the space at the top of columns
     },
     checkboxRow: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+    },
+    checkboxContainer: {
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-around',
-        width: '100%',
-        marginBottom: 10,
+        marginRight: 20, // Adjust this value to control the space between checkboxes
+        marginBottom: 10, // Adjust this value to control the space between checkbox rows
+    },
+    checkboxLabel: {
+        marginLeft: 5, // Adjust this value to control the space between checkbox and label
+    },
+    button: {
+        marginTop: 20,
+    },
+    buttonText: {
+        fontFamily: 'sans-serif',
+        fontWeight: 'bold',
     },
     submitButton: {
-        marginTop: 20,
-        width: '100%', // Ensuring button stretches to container width
-        justifyContent: 'center',
-        backgroundColor: 'blue', // Color for visibility
+        backgroundColor: '#81dff6', // Blue color
     }
+
 });
 
+
 export default EditProfileScreen;
+

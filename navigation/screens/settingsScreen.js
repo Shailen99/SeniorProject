@@ -20,7 +20,7 @@ function SettingsScreen() {
 
     return (
         <View style={styles.container}>
-            <Text>Settings Screen</Text>
+            <Text>Click here to sign out.</Text>
             <Button title="Sign Out" onPress={handleSignOut} />
         </View>
     );
