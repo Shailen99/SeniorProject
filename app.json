@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "seniorProjectSP",
-    "slug": "seniorProjectSP",
+    "name": "MeetNStudy",
+    "slug": "MeetNStudy",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,6 +10,9 @@
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
+    },
+    "extra":{
+      "enabled": true
     },
     "assetBundlePatterns": [
       "**/*"
